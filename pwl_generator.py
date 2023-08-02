@@ -1,8 +1,9 @@
 import numpy as np 
 import pandas as pd
+import csv
 
 def main():
-    params = [0, 5, 500e-6, 5e-9, 5e-9, 0.5, 50e3, 60e3, 0.5e3, 7]
+    params = [0, 5, 500e-6, 5e-9, 5e-9, 0.5, 10e3, 20e3, 0.5e3, 7]
     low = float(params[0])
     high = float(params[1])
     delay = float(params[2])
@@ -35,12 +36,12 @@ def main():
             pwl.extend((curr_time, low))
             curr_time += (1-duty)*period
         
-    csv_data = ','.join(['{:.7e}'.format(x) for x in pwl])
-    with open('pwl.txt', 'w') as f:
-        f.write(csv_data)
-
     time = pwl[::2]
     volts = pwl[1::2]
+    #csv_data = ','.join(['{:.7e}'.format(x) for x in pwl])
+    with open('pwl.csv', 'w', newline='') as f:
+        writer = csv.writer(f, delimiter=',')
+        writer.writerows(zip(time, volts))
     df = pd.DataFrame(list(zip(time, volts)), columns=['Time', 'Volts'])
     print(df)
     df.to_excel("pwl.xlsx")
